@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# John Haggerty, BNL
+# 2021-03
+# Initial testing of snmp communication with MPOD
+
+ip=a.b.c.d
+
+# all needed MIBS 
+path=+/home/phnxrc/haggerty/MIBS
+
+echo $ip
+echo $path
+
+snmpwalk -Cp -Oqv -v 2c -M $path -m +WIENER-CRATE-MIB -c public $ip
+
+snmpwalk -Cp -Oqv -v 2c -M $path -m +WIENER-CRATE-MIB -c public $ip crate
+snmpwalk -Cp -Oqv -v 2c -M $path -m +WIENER-CRATE-MIB -c guru $ip crate
+
+snmpwalk -Cp -Oqv -v 2c -M PATH -m +WIENER-CRATE-MIB -c public IP outputName
+
+# reads all voltage setpoints
+echo "read all voltage setpoints"
+snmpwalk -Cp -Oqv -v 2c -M $path -m +WIENER-CRATE-MIB -c guru $ip outputVoltage
+
+echo "try to set channel 0 setpoint"
+snmpset -v 2c -M $path -m +WIENER-CRATE-MIB -c guru $ip outputVoltage.u0 F 66.5
+echo "read back channel 0 setpoint"
+snmpget -v 2c -M $path -m +WIENER-CRATE-MIB -c guru $ip outputVoltage.u0
